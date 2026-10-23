@@ -1,0 +1,923 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#E4E8EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171C1F" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Paso a Paso">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Paso a Paso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<style>
+/* Layout: one column like a site diary. Levels stack like roof courses; hi-vis yellow marks the one thing to press next. */
+:root {
+  --bg: #E4E8EA;
+  --panel: #F6F7F8;
+  --ink: #1C2226;
+  --muted: #56636A;
+  --line: #C3CBD0;
+  --rib: #D3D9DD;
+  --edge: #6B777E;
+  --hivis: #F2B705;
+  --hivis-ink: #1C2226;
+  --ok: #2B7448;
+  --ok-soft: #DCEFE3;
+  --bad: #A93D2C;
+  --bad-soft: #F6E1DC;
+  --chile: #1F4E8C;
+  --chile-soft: #E1E9F5;
+  --display: "Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171C1F; --panel: #222A2E; --ink: #E8ECEE; --muted: #9AA6AC; --line: #36414A; --rib: #2D363C; --edge: #6F7C84;
+    --hivis: #F5C02A; --hivis-ink: #171C1F; --ok: #63BE88; --ok-soft: #1E3628; --bad: #E2775F; --bad-soft: #3D231D;
+    --chile: #8DB4EE; --chile-soft: #1D2A3D;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171C1F; --panel: #222A2E; --ink: #E8ECEE; --muted: #9AA6AC; --line: #36414A; --rib: #2D363C; --edge: #6F7C84;
+  --hivis: #F5C02A; --hivis-ink: #171C1F; --ok: #63BE88; --ok-soft: #1E3628; --bad: #E2775F; --bad-soft: #3D231D;
+  --chile: #8DB4EE; --chile-soft: #1D2A3D;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 18px; line-height: 1.5;
+  padding-inline: 16px; padding-block: 16px 48px;
+}
+.wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
+p { margin: 0; }
+.es { font-weight: 700; }
+
+/* Top bar */
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+.brand { font-family: var(--display); font-weight: 800; font-size: 2.2rem; line-height: .9; text-transform: uppercase; margin: 0; letter-spacing: .01em; }
+.brand button { all: unset; cursor: pointer; display: inline-flex; align-items: center; min-height: 44px; }
+.meta { display: flex; gap: 14px; align-items: center; font: 500 .8rem var(--mono); color: var(--muted); }
+.iconbtn { font: 700 .9rem var(--body); color: var(--ink); background: transparent; border: 1.5px solid var(--edge); border-radius: 8px; padding: 8px 14px; min-height: 44px; cursor: pointer; }
+
+/* Generic */
+.card { background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 20px; display: grid; gap: 14px; min-width: 0; }
+.kicker { font: 700 .75rem var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+h2 { font-family: var(--display); font-weight: 800; font-size: clamp(1.9rem, 7vw, 2.6rem); line-height: .95; margin: 0; text-transform: uppercase; text-wrap: balance; }
+h3 { font-size: 1.25rem; margin: 0; line-height: 1.25; text-wrap: balance; }
+.muted { color: var(--muted); }
+.btn {
+  font: 700 1.05rem var(--body); border-radius: 10px; padding: 13px 20px; min-height: 50px; cursor: pointer;
+  border: 1.5px solid var(--ink); background: transparent; color: var(--ink);
+}
+.btn.primary { background: var(--hivis); border-color: var(--hivis); color: var(--hivis-ink); }
+.btn.small { font-size: .9rem; padding: 8px 14px; min-height: 44px; }
+.btn:disabled { opacity: .45; cursor: default; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+
+/* Home: today */
+.today { display: grid; gap: 12px; }
+.today .next { display: grid; gap: 4px; }
+.stats { display: flex; flex-wrap: wrap; gap: 8px 18px; font: 500 .85rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Level path: each level is a roof course */
+.path { display: grid; gap: 10px; }
+.level { background: var(--panel); border: 1.5px solid var(--line); border-radius: 12px; overflow: hidden; }
+.level-head { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 14px 16px; width: 100%; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.level-head:disabled { cursor: default; }
+.lvnum { font-family: var(--display); font-weight: 800; font-size: 2rem; line-height: 1; width: 2.2ch; text-align: center; }
+.lvtext { min-width: 0; display: grid; gap: 2px; }
+.lvtitle { font-weight: 700; }
+.lvidea { color: var(--muted); font-size: .9rem; }
+.pill { font: 700 .72rem var(--body); letter-spacing: .08em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; border: 1.5px solid var(--line); color: var(--muted); white-space: nowrap; }
+.pill.done { border-color: var(--ok); color: var(--ok); }
+.pill.open { border-color: var(--ink); color: var(--ink); }
+.level.locked { opacity: .6; }
+.level.current { border-color: var(--ink); }
+.level.current::before { content: ""; display: block; height: 8px; background: repeating-linear-gradient(90deg, var(--hivis) 0 10px, color-mix(in srgb, var(--hivis) 70%, var(--ink)) 10px 14px); }
+.lessons { display: grid; border-top: 1.5px solid var(--line); }
+.lesson-row { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; padding: 12px 16px; background: none; border: 0; border-top: 1px solid var(--line); color: inherit; font: inherit; text-align: left; cursor: pointer; min-height: 56px; }
+.lesson-row:first-child { border-top: 0; }
+.tick { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-size: .8rem; font-weight: 700; }
+.tick.done { background: var(--ok); border-color: var(--ok); color: var(--panel); }
+.lesson-row .mins { font: 500 .8rem var(--mono); color: var(--muted); white-space: nowrap; }
+
+/* Runner */
+.bar { display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: center; }
+.progress { height: 12px; border-radius: 3px; background: repeating-linear-gradient(90deg, var(--rib) 0 5px, var(--line) 5px 7px); overflow: hidden; }
+.progress > span { display: block; height: 100%; background: repeating-linear-gradient(90deg, var(--hivis) 0 5px, color-mix(in srgb, var(--hivis) 70%, var(--ink)) 5px 7px); transition: width .25s ease; }
+.count { font: 500 .85rem var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.prompt { font-size: 1.15rem; }
+.big-es, .big-en { font-weight: 700; font-size: clamp(1.5rem, 6vw, 2rem); line-height: 1.3; text-wrap: balance; }
+.en { color: var(--muted); font-style: italic; }
+.learn-text { display: grid; gap: 10px; }
+.examples { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.examples li { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; }
+.ex-es { font-weight: 700; }
+.ex-en { color: var(--muted); font-size: .95rem; }
+.speak { width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid var(--edge); background: var(--bg); color: var(--ink); cursor: pointer; display: grid; place-items: center; flex: none; }
+.speak svg { width: 18px; height: 18px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 700 1rem var(--body); padding: 8px 14px; min-height: 44px; border-radius: 8px; border: 1.5px solid var(--edge); background: var(--bg); color: var(--ink); cursor: pointer; }
+.mistake { display: grid; gap: 4px; border-left: 4px solid var(--bad); padding: 4px 0 4px 12px; }
+.mistake .w { color: var(--bad); text-decoration: line-through; font-weight: 700; }
+.mistake .r { color: var(--ok); font-weight: 700; }
+.chile { display: grid; gap: 4px; background: var(--chile-soft); border-radius: 10px; padding: 12px 14px; }
+.chile .kicker { color: var(--chile); }
+
+.tile {
+  position: relative; font: 700 1.1rem var(--body); color: var(--ink); background: var(--bg);
+  border: 1.5px solid var(--edge); border-radius: 10px; padding: 18px 14px 12px; cursor: pointer; text-align: center;
+  min-height: 58px; min-width: 0; overflow-wrap: anywhere;
+}
+.tile::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 7px; border-radius: 9px 9px 0 0; background: repeating-linear-gradient(90deg, var(--rib) 0 6px, var(--line) 6px 9px); }
+@media (hover: hover) { .tile:hover:not(:disabled) { border-color: var(--ink); } }
+.tile:disabled { cursor: default; }
+.tile.ok { border-color: var(--ok); background: var(--ok-soft); }
+.tile.bad { border-color: var(--bad); background: var(--bad-soft); }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.tray, .pool { display: flex; flex-wrap: wrap; gap: 8px; min-height: 62px; align-items: flex-start; }
+.tray { border: 2px dashed var(--line); border-radius: 10px; padding: 8px; }
+.tray .tile, .pool .tile { padding: 14px 12px 8px; font-size: 1.05rem; min-height: 50px; min-width: 48px; }
+button { touch-action: manipulation; }
+.answer-row { display: flex; gap: 10px; align-items: stretch; }
+.answer-row .answer { flex: 1; min-width: 0; }
+.confirm { display: grid; gap: 10px; color: var(--ink); }
+body.sheet-open { padding-bottom: 60vh; }
+.field { display: grid; gap: 6px; }
+.field input { font: 400 1rem var(--body); padding: 10px; min-height: 44px; border-radius: 8px; border: 1.5px solid var(--edge); background: var(--bg); color: var(--ink); max-width: 100%; }
+.label { font: 700 .75rem var(--body); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+
+.answer { width: 100%; font: 700 1.25rem var(--body); padding: 14px; border-radius: 10px; border: 2px solid var(--edge); background: var(--bg); color: var(--ink); }
+.answer:focus { border-color: var(--ink); }
+.keys { display: flex; flex-wrap: wrap; gap: 6px; }
+.keys button { font: 700 1.05rem var(--body); min-width: 44px; min-height: 44px; border-radius: 8px; border: 1.5px solid var(--edge); background: var(--bg); color: var(--ink); cursor: pointer; }
+
+.play { display: grid; place-items: center; gap: 8px; }
+.play .speak { width: 84px; height: 84px; border-color: var(--ink); }
+.play .speak svg { width: 34px; height: 34px; }
+
+.feedback { border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; }
+.feedback.ok { background: var(--ok-soft); }
+.feedback.bad { background: var(--bad-soft); }
+.feedback.wait { background: var(--bg); border: 1.5px dashed var(--line); }
+.verdict { font-family: var(--display); font-weight: 800; font-size: 1.6rem; line-height: 1; text-transform: uppercase; }
+.feedback.ok .verdict { color: var(--ok); }
+.feedback.bad .verdict { color: var(--bad); }
+.linkbtn { all: unset; cursor: pointer; text-decoration: underline; color: var(--muted); font-size: .95rem; display: inline-flex; align-items: center; min-height: 44px; padding: 0 4px; }
+.speak[hidden] { display: none; }
+.notice { font-size: .9rem; color: var(--muted); border: 1.5px dashed var(--edge); border-radius: 8px; padding: 8px 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.selfmark { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.selfmark .btn { padding-inline: 8px; }
+
+.result-score { font-family: var(--display); font-weight: 800; font-size: clamp(3rem, 14vw, 4.5rem); line-height: .9; }
+ul.plain { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+
+.sheet { position: fixed; inset: auto 0 0 0; background: var(--panel); border-top: 1.5px solid var(--line); padding: 18px 16px calc(18px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 12px; max-height: 80vh; overflow: auto; box-shadow: 0 -8px 30px rgb(0 0 0 / .18); }
+.sheet .inner { max-width: 760px; margin: 0 auto; width: 100%; display: grid; gap: 12px; }
+select { font: 400 1rem var(--body); padding: 10px; min-height: 44px; border-radius: 8px; border: 1.5px solid var(--edge); background: var(--bg); color: var(--ink); max-width: 100%; }
+
+button:focus-visible, summary:focus-visible, select:focus-visible, input:focus-visible, #runner:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; box-shadow: 0 0 0 7px var(--hivis); }
+@media (prefers-reduced-motion: reduce) { .progress > span { transition: none; } }
+@media (max-width: 420px) { .card { padding: 16px; } body { font-size: 17px; } .selfmark { grid-template-columns: 1fr; } }
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(function () {
+  "use strict";
+  const COURSE = {"levels": [{"id": 1, "title": "First words", "idea": "Sounds, greetings, el/la, numbers 0 to 20, soy and me llamo"}, {"id": 2, "title": "Is it ser or estar?", "idea": "Two verbs for 'to be', and describing things: la lámina es larga"}, {"id": 3, "title": "Doing things", "idea": "Present tense of regular verbs (hablo, comes, vivimos) and asking questions"}, {"id": 4, "title": "Plans and jobs", "idea": "tengo que / voy a / quiero / necesito + a verb"}, {"id": 5, "title": "Why and what you like", "idea": "por vs porque, gustar, and little words like a, de, en, con"}, {"id": 6, "title": "Shape-shifting verbs", "idea": "Verbs that change their middle (quiero, puedo) and me / te / se verbs"}, {"id": 7, "title": "Yesterday", "idea": "Talking about the past: trabajé, fui"}, {"id": 8, "title": "Two pasts", "idea": "'was doing' vs 'did': trabajaba vs trabajé"}, {"id": 9, "title": "Orders and plans", "idea": "Commands and future plans"}, {"id": 10, "title": "Wishes and real speed", "idea": "Wishes and feelings (quiero que...) and Chilean speech at full speed"}]};
+  const LEVELS = {"1": {"id": 1, "lessons": [{"id": "1.1", "title": "How Spanish sounds", "minutes": 7, "steps": [{"t": "learn", "title": "Five vowels, five sounds", "text": ["English vowels change sound all the time. Spanish vowels never do. Learn these five and you can read most Spanish words out loud."], "examples": [["a", "ah, as in 'father'"], ["e", "eh, as in 'bed'"], ["i", "ee, as in 'see'"], ["o", "oh, short and clean, with no 'ow' glide at the end"], ["u", "oo, as in 'food'"]], "say": ["casa", "mesa", "libro", "uno"]}, {"t": "learn", "title": "Letters that trick English speakers", "text": ["*h* is always silent: *hola* is OH-lah.", "*j* is a soft, breathy h: *jefe* (boss) is HEH-feh.", "*ll* and *y* both sound like the English y: *llave* (key) is YAH-beh.", "*ñ* is 'ny', like canyon: *mañana* is mah-NYAH-nah.", "*c* before e or i, and every *z*, sound like s in Latin America: *cinco* is SEEN-koh, *zapato* is sah-PAH-toh."], "mistake": {"wrong": "THEEN-koh", "right": "SEEN-koh", "why": "The 'th' sound is only used in central and northern Spain. Latin Americans say s."}, "chile": "Chileans often swallow an s at the end of a syllable. *¿Cómo estás?* can sound like 'cómo ehtá', and *los amigos* like 'loh amigoh'. The s is still there in writing."}, {"t": "learn", "title": "Four more sounds", "text": ["*ch* is the English ch: *mucho*, *techo*, *chao*.", "*qu* is just k, the u is silent: *quince* is KEEN-seh, *¿qué tal?* is keh TAHL.", "*v* sounds like b: *llave* is YAH-beh, *vivo* is BEE-boh.", "One *r* is a quick tap, like the fast d sound in an Aussie 'butter': *tres*, *cuatro*, *por favor*. Double *rr* is rolled: *perro* (dog).", "The word *y* (and) on its own sounds like 'ee': *el techo y la puerta*."]}, {"t": "learn", "title": "Where to push", "text": ["Every word has one strong syllable. Three simple rules tell you which one.", "Ends in a vowel, n or s: push the second-to-last. CA-sa, TE-cho, GRA-cias.", "Ends in any other letter: push the last. pa-PEL, re-LOJ.", "An accent mark breaks the rules: push where the mark is. ca-FÉ, te-LÉ-fo-no."]}, {"t": "choice", "id": "1.1.h", "prompt": "How do you say the h in this word?", "es": "hola", "options": ["Silent: OH-lah", "Like English h: HOH-lah", "Like a j: JOH-lah"], "answer": "Silent: OH-lah", "why": "The h is always silent in Spanish.", "speak": "hola", "optLang": "en"}, {"t": "choice", "id": "1.1.ll", "prompt": "How does llave (key) sound?", "es": "llave", "options": ["YAH-beh", "LAH-beh", "JAH-beh"], "answer": "YAH-beh", "why": "ll sounds like the English y, and v sounds like b.", "speak": "llave", "optLang": "en"}, {"t": "choice", "id": "1.1.c", "prompt": "In Latin America, cinco (five) sounds like…", "es": "cinco", "options": ["SEEN-koh", "THEEN-koh", "KEEN-koh"], "answer": "SEEN-koh", "why": "c before e or i sounds like s. The 'th' version is Spain only.", "speak": "cinco", "optLang": "en"}, {"t": "choice", "id": "1.1.j", "prompt": "How does jefe (boss) sound?", "es": "jefe", "options": ["HEH-feh", "JEH-feh, like 'jet'", "YEH-feh"], "answer": "HEH-feh", "why": "j is a breathy h, never the English j.", "speak": "jefe", "optLang": "en"}, {"t": "choice", "id": "1.1.stress", "prompt": "Where's the push in teléfono?", "es": "teléfono", "options": ["te-LÉ-fo-no", "TE-le-fo-no", "te-le-FO-no"], "answer": "te-LÉ-fo-no", "why": "The accent mark shows exactly where to push.", "speak": "teléfono", "optLang": "en"}, {"t": "listen", "id": "1.1.listen", "prompt": "Listen. Which word did you hear?", "es": "mañana", "options": ["mañana", "manzana", "mano"], "answer": "mañana", "why": "mañana (tomorrow) has the ny sound of ñ. manzana is an apple."}, {"t": "say", "id": "1.1.say1", "es": "Hola. Mañana. La llave.", "en": "Hello. Tomorrow. The key.", "tip": "Silent h, 'ny' for ñ, 'y' for ll."}, {"t": "say", "id": "1.1.say2", "es": "Cinco zapatos.", "en": "Five shoes.", "tip": "Both the c and the z sound like s."}, {"t": "choice", "id": "1.1.chile", "prompt": "A Chilean mate says 'loh amigoh'. What did they say?", "options": ["los amigos", "lo amigo", "las amigas"], "answer": "los amigos", "why": "Chileans soften the s at the end of a syllable. It's still there in writing.", "speak": "los amigos"}]}, {"id": "1.2", "title": "Hello and goodbye", "minutes": 7, "steps": [{"t": "learn", "title": "Saying hello", "text": ["*Hola* works any time, with anyone.", "*Buenos días*: good morning, until about lunchtime.", "*Buenas tardes*: good afternoon, from lunch until dark.", "*Buenas noches*: good evening. It's also how you say goodnight."], "mistake": {"wrong": "Buenos tardes", "right": "Buenas tardes", "why": "It's *la tarde* and *la noche*, so buen*as*. Only *el día* takes buen*os*."}}, {"t": "learn", "title": "How are you?", "text": ["*¿Cómo estás?* How are you?", "Answers: *Bien, gracias.* (Good, thanks.) *Muy bien.* (Very good.) *Más o menos.* (So-so.) *Mal.* (Not good.)", "Then bounce it back: *¿Y tú?* (And you?)"], "examples": [["¿Cómo estás?", "How are you?"], ["Bien, gracias, ¿y tú?", "Good, thanks, and you?"]], "chile": "In Chile you'll hear *¿Cómo estai?* It means exactly the same as *¿Cómo estás?* Push the last bit: es-TAI. *¿Qué tal?* (How's it going?) works everywhere, Chile included."}, {"t": "learn", "title": "Meeting someone and leaving", "text": ["*Mucho gusto.* Nice to meet you. The reply is *Igualmente.* (Likewise.) You'll also hear *Encantado* (delighted).", "Leaving: *Chao.* (Bye, very common in Chile and much of South America.) *Adiós.* (Goodbye, a bit more final.) *Hasta luego.* (See you later.) *Nos vemos.* (See you.) *Hasta mañana.* (See you tomorrow.)"]}, {"t": "choice", "id": "1.2.morning", "prompt": "It's 7 am and you arrive on site. You say…", "options": ["Buenos días", "Buenas tardes", "Buenas noches"], "answer": "Buenos días", "why": "Buenos días is for the morning, until about lunchtime.", "speak": "Buenos días"}, {"t": "choice", "id": "1.2.afternoon", "prompt": "It's 3 pm and a customer walks in. You say…", "options": ["Buenas tardes", "Buenos días", "Buenas noches"], "answer": "Buenas tardes", "why": "Buenas tardes covers lunch until dark.", "speak": "Buenas tardes"}, {"t": "choice", "id": "1.2.fix", "prompt": "Fix this greeting.", "es": "Buenos tardes", "options": ["Buenas tardes", "Buena tarde", "Buenos tarde"], "answer": "Buenas tardes", "why": "It's la tarde, so buenas. Only el día takes buenos.", "speak": "Buenas tardes"}, {"t": "build", "id": "1.2.build", "en": "Good, thanks, and you?", "tiles": ["bien,", "gracias,", "¿y tú?"], "extra": ["buenos días"], "why": "Answer, say thanks, then bounce the question back."}, {"t": "type", "id": "1.2.type1", "prompt": "Someone asks: ¿Cómo estás? Say you're good, thanks.", "answers": ["bien, gracias", "muy bien, gracias", "bien, gracias, ¿y tú?", "muy bien, gracias, ¿y tú?", "estoy bien, gracias", "estoy muy bien, gracias", "bien gracias y usted", "muy bien gracias y usted", "estoy bien, gracias, ¿y tú?", "estoy muy bien, gracias, ¿y tú?", "gracias, bien", "bien, muchas gracias", "muy bien, muchas gracias", "bien, gracias, ¿y usted?", "estoy bien, gracias, ¿y usted?"], "why": "Bien, gracias. Add ¿y tú? to be friendly.", "show": "Bien, gracias."}, {"t": "choice", "id": "1.2.gusto", "prompt": "Someone says Mucho gusto. You reply…", "options": ["Igualmente", "De nada", "Hasta luego"], "answer": "Igualmente", "why": "Igualmente means likewise. De nada is 'you're welcome'.", "speak": "Mucho gusto. Igualmente."}, {"t": "choice", "id": "1.2.chile", "prompt": "A Chilean asks ¿Cómo estai? What do they mean?", "options": ["How are you?", "Where are you?", "Who are you?"], "answer": "How are you?", "why": "Chileans change estás to estai with friends. Same meaning.", "speak": "¿Cómo estai?", "optLang": "en"}, {"t": "type", "id": "1.2.type2", "prompt": "Knocking off for the day. Say 'See you tomorrow'.", "answers": ["hasta mañana", "chao, hasta mañana", "nos vemos mañana", "chao, nos vemos mañana", "hasta mañana, chao", "nos vemos, hasta mañana", "adiós, hasta mañana", "hasta mañana, nos vemos"], "why": "Hasta mañana. Nos vemos mañana works too.", "show": "Hasta mañana."}, {"t": "say", "id": "1.2.say", "es": "Buenos días, ¿cómo estás?", "en": "Good morning, how are you?", "tip": "Buenos with an o. Say it BWEH-nohs DEE-ahs."}]}, {"id": "1.3", "title": "Two ways to say 'you'", "minutes": 6, "steps": [{"t": "learn", "title": "Tú or usted", "text": ["Spanish has a friendly 'you' and a respectful 'you'.", "*tú*: mates, family, kids, people your own age.", "*usted*: the boss, customers, older people, strangers, police.", "Not sure? *usted* is the safe choice with strangers. With mates it can sound stiff."], "examples": [["¿Cómo estás?", "How are you? (tú, to a mate)"], ["¿Cómo está?", "How are you? (usted, to a customer)"]]}, {"t": "learn", "title": "Talking to a group", "text": ["For 'you all', Latin America always says *ustedes*. It works for mates and strangers alike.", "Spain has another word for this, but you won't need it."], "examples": [["¿Cómo están?", "How are you all?"]], "chile": "This is a Chile difference: Chileans use *tú* a lot, even with new people their own age. With *tú* they often change the verb ending and push the last bit: *¿cómo estai?* (es-TAI), *¿cachai?* (ca-CHAI, you get it?). Understand it for now, no need to say it yet."}, {"t": "choice", "id": "1.3.customer", "prompt": "An older customer on site. Which 'you'?", "options": ["usted", "tú", "ustedes"], "answer": "usted", "why": "Customers and older people get usted.", "speak": "¿Cómo está usted?"}, {"t": "choice", "id": "1.3.mate", "prompt": "Your mate from work. Which 'you'?", "options": ["tú", "usted", "ustedes"], "answer": "tú", "why": "Mates get tú.", "speak": "¿Cómo estás?"}, {"t": "choice", "id": "1.3.crew", "prompt": "Talking to the whole crew at once. Which 'you'?", "options": ["ustedes", "tú", "usted"], "answer": "ustedes", "why": "More than one person is always ustedes in Latin America.", "speak": "¿Cómo están ustedes?"}, {"t": "choice", "id": "1.3.police", "prompt": "A police officer stops you. Which 'you'?", "options": ["usted", "tú", "ustedes"], "answer": "usted", "why": "Officials and strangers get usted.", "speak": "Buenas tardes. ¿Cómo está usted?"}, {"t": "choice", "id": "1.3.esta", "prompt": "¿Cómo está? is said to…", "options": ["someone you call usted", "a close mate", "a group"], "answer": "someone you call usted", "why": "está goes with usted. estás goes with tú.", "speak": "¿Cómo está?", "optLang": "en"}, {"t": "build", "id": "1.3.build", "en": "How are you? (to a customer)", "tiles": ["¿cómo", "está", "usted?"], "extra": ["estás"], "why": "usted takes está, without the s."}, {"t": "type", "id": "1.3.type", "prompt": "Ask your mate how they are.", "answers": ["¿cómo estás?", "hola, ¿cómo estás?", "¿qué tal?", "hola, ¿qué tal?", "¿cómo estai?", "¿cómo estás tú?", "hola, ¿cómo estai?", "¿tú cómo estás?", "¿y tú, cómo estás?", "¿cómo andas?", "¿cómo te va?", "hola, ¿cómo te va?", "hola, ¿cómo estás tú?", "¿qué tal estás?"], "why": "¿Cómo estás? is the tú version for a mate.", "show": "¿Cómo estás?"}, {"t": "say", "id": "1.3.say", "es": "Mucho gusto, ¿cómo está usted?", "en": "Nice to meet you, how are you?", "tip": "Respectful, for a new customer. MOO-choh GOOS-toh."}]}, {"id": "1.4", "title": "El, la, los, las", "minutes": 8, "steps": [{"t": "learn", "title": "Every thing is el or la", "text": ["Every Spanish noun is either masculine or feminine. For things, it's just grammar. For people, it matches the person: *el amigo*, *la amiga*.", "*el* = the (masculine). *la* = the (feminine).", "Most words ending in -o take *el*: *el techo* (roof), *el martillo* (hammer).", "Most words ending in -a take *la*: *la puerta* (door), *la ventana* (window).", "Learn each word with its el or la, as one block."]}, {"t": "learn", "title": "The tricky ones", "text": ["A few break the pattern. Learn these as they come.", "End in -a but take el: *el día*, *el mapa*, *el problema*.", "End in -o but take la: *la mano* (hand), *la foto*.", "Words ending in -ción or -sión take la: *la canción* (song), *la información*. Other -ión words can differ: *el camión* (truck) and *el avión* (plane) are masculine.", "*el agua* (water) is feminine, but takes el because *la agua* is hard to say. Just learn it as *el agua*."], "mistake": {"wrong": "la problema", "right": "el problema", "why": "problema ends in -a but takes el. One of the rule-breakers."}}, {"t": "learn", "title": "More than one, and 'a'", "text": ["Ends in a vowel: add -s. *el techo* → *los techos*, *la puerta* → *las puertas*.", "Ends in a consonant: add -es. *el papel* → *los papeles*, *la flor* → *las flores*.", "*los* and *las* = the, for more than one.", "'A' or 'an' is *un* (masculine) or *una* (feminine): *un martillo*, *una llave* (a key)."], "chile": "Car is *el carro* in many countries, but in Chile it's *el auto*."}, {"t": "choice", "id": "1.4.techo", "prompt": "Pick the right word: ___ techo (roof)", "options": ["el", "la"], "answer": "el", "why": "techo ends in -o, so el techo.", "speak": "el techo"}, {"t": "choice", "id": "1.4.puerta", "prompt": "Pick the right word: ___ puerta (door)", "options": ["la", "el"], "answer": "la", "why": "puerta ends in -a, so la puerta.", "speak": "la puerta"}, {"t": "choice", "id": "1.4.dia", "prompt": "Pick the right word: ___ día (day)", "options": ["el", "la"], "answer": "el", "why": "día is a rule-breaker: it ends in -a but takes el.", "speak": "el día"}, {"t": "choice", "id": "1.4.mano", "prompt": "Pick the right word: ___ mano (hand)", "options": ["la", "el"], "answer": "la", "why": "mano is a rule-breaker: it ends in -o but takes la.", "speak": "la mano"}, {"t": "choice", "id": "1.4.cancion", "prompt": "Pick the right word: ___ canción (song)", "options": ["la", "el"], "answer": "la", "why": "Words ending in -ción take la.", "speak": "la canción"}, {"t": "choice", "id": "1.4.plural", "prompt": "More than one: el martillo → ?", "options": ["los martillos", "las martillos", "los martillo"], "answer": "los martillos", "why": "el becomes los, and add -s after a vowel.", "speak": "los martillos"}, {"t": "type", "id": "1.4.llaves", "prompt": "Make it more than one: la llave (the key)", "answers": ["las llaves"], "why": "la becomes las, and llave ends in a vowel, so add -s.", "show": "Las llaves."}, {"t": "type", "id": "1.4.un", "prompt": "Write 'a hammer' in Spanish.", "answers": ["un martillo"], "why": "martillo is masculine, so un martillo.", "show": "Un martillo."}, {"t": "build", "id": "1.4.build", "en": "the roof and the door", "tiles": ["el", "techo", "y", "la", "puerta"], "extra": ["los"], "why": "el techo, la puerta. y means 'and'."}, {"t": "say", "id": "1.4.say", "es": "El martillo, la llave y los clavos.", "en": "The hammer, the key and the nails.", "tip": "ll in martillo and llave sounds like y."}]}, {"id": "1.5", "title": "Numbers 0 to 20", "minutes": 7, "steps": [{"t": "learn", "title": "0 to 10", "text": ["*cero, uno, dos, tres, cuatro, cinco, seis, siete, ocho, nueve, diez*", "Before a noun, *uno* becomes *un* or *una*: *un martillo*, *una llave*."], "say": ["uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve", "diez"]}, {"t": "learn", "title": "11 to 20", "text": ["*once, doce, trece, catorce, quince*: just learn these five.", "16 to 19 are 'ten and six' squashed into one word: *dieciséis, diecisiete, dieciocho, diecinueve*.", "*veinte* = 20."], "mistake": {"wrong": "dieciseis", "right": "dieciséis", "why": "16 has an accent mark: dieci-SÉIS."}, "say": ["once", "doce", "trece", "catorce", "quince", "dieciséis", "veinte"]}, {"t": "choice", "id": "1.5.7", "prompt": "Which one is 7?", "options": ["siete", "seis", "diez"], "answer": "siete", "why": "seis is 6, siete is 7.", "speak": "siete"}, {"t": "choice", "id": "1.5.15", "prompt": "Which one is 15?", "options": ["quince", "cinco", "catorce"], "answer": "quince", "why": "cinco is 5, catorce is 14, quince is 15.", "speak": "quince"}, {"t": "listen", "id": "1.5.listen12", "prompt": "Listen. Which number?", "es": "doce", "options": ["12", "2", "20"], "answer": "12", "why": "doce is 12. dos is 2, veinte is 20.", "optLang": "en"}, {"t": "listen", "id": "1.5.listen13", "prompt": "Listen. Which number?", "es": "trece", "options": ["13", "3", "16"], "answer": "13", "why": "trece is 13. tres is 3.", "optLang": "en"}, {"t": "type", "id": "1.5.16", "prompt": "Write 16 as a word.", "answers": ["dieciséis", "diez y seis"], "why": "dieci + seis, with an accent: dieciséis.", "show": "Dieciséis."}, {"t": "type", "id": "1.5.20", "prompt": "Write 20 as a word.", "answers": ["veinte"], "why": "veinte, said BAYN-teh.", "show": "Veinte."}, {"t": "type", "id": "1.5.laminas", "prompt": "Write '12 sheets' (sheet = lámina).", "answers": ["doce láminas", "doce planchas", "12 láminas"], "why": "doce + láminas. Plural because there's more than one.", "show": "Doce láminas."}, {"t": "choice", "id": "1.5.una", "prompt": "Pick the right word: ___ llave (a key)", "options": ["una", "uno", "un"], "answer": "una", "why": "llave takes la, so it's una llave.", "speak": "una llave"}, {"t": "say", "id": "1.5.say1", "es": "Uno, dos, tres, cuatro, cinco.", "en": "One, two, three, four, five.", "tip": "cuatro is KWAH-troh, cinco is SEEN-koh."}, {"t": "say", "id": "1.5.say2", "es": "Diez tornillos, por favor.", "en": "Ten screws, please.", "tip": "diez is one beat, like 'yes' with a d in front: dyess."}]}, {"id": "1.6", "title": "Who you are", "minutes": 7, "steps": [{"t": "learn", "title": "Your name", "text": ["*Me llamo {name}.* My name is {name}. (Literally 'I call myself {name}'.)", "*Soy {name}.* I'm {name}. Just as common.", "Asking: *¿Cómo te llamas?* to a mate, *¿Cómo se llama?* to a customer."], "mistake": {"wrong": "Me llamo es {name}", "right": "Me llamo {name}", "why": "*me llamo* already means 'my name is'. No es needed."}, "chile": "A Chilean might ask *¿Cómo te llamai?* (te lla-MAI). Same question, Chilean ending."}, {"t": "learn", "title": "Where you're from and what you do", "text": ["*Soy de Australia.* I'm from Australia. Or *Soy australiano.* I'm Australian.", "*¿De dónde eres?* Where are you from? (to a mate). *¿De dónde es?* (to a customer).", "Two handy blocks to memorise whole: *Vivo en Sídney.* (I live in Sydney.) *Trabajo en una empresa de techos.* (I work for a roofing company.)"]}, {"t": "choice", "id": "1.6.meaning", "prompt": "What does this mean?", "es": "Me llamo {name}.", "options": ["My name is {name}.", "I call {name}.", "I'm calling {name}."], "answer": "My name is {name}.", "why": "Me llamo is how you give your name.", "speak": "Me llamo {name}.", "optLang": "en"}, {"t": "choice", "id": "1.6.fix", "prompt": "Fix this sentence.", "es": "Me llamo es {name}.", "options": ["Me llamo {name}.", "Me es llamo {name}.", "Llamo es {name}."], "answer": "Me llamo {name}.", "why": "No es after me llamo.", "speak": "Me llamo {name}."}, {"t": "choice", "id": "1.6.customer", "prompt": "Ask a new customer their name.", "options": ["¿Cómo se llama?", "¿Cómo te llamas?", "¿Cómo estás?"], "answer": "¿Cómo se llama?", "why": "se llama is the usted version, right for a customer.", "speak": "¿Cómo se llama?"}, {"t": "build", "id": "1.6.build", "en": "My name is {name} and I'm from Australia.", "tiles": ["me", "llamo", "{name}", "y", "soy", "de", "Australia."], "extra": ["es"], "why": "Me llamo + name, then soy de + place."}, {"t": "type", "id": "1.6.name", "prompt": "Tell someone your name (use {name}).", "answers": ["me llamo {name}", "soy {name}", "mi nombre es {name}", "hola, me llamo {name}", "hola, soy {name}", "yo me llamo {name}", "hola, mi nombre es {name}", "mucho gusto, me llamo {name}", "mucho gusto, soy {name}", "yo soy {name}", "me llamo {name}, mucho gusto", "soy {name}, mucho gusto"], "why": "Me llamo {name}, or Soy {name}.", "show": "Me llamo {name}."}, {"t": "type", "id": "1.6.from", "prompt": "Say you're from Australia.", "answers": ["soy de australia", "soy australiano", "yo soy de australia", "yo soy australiano", "soy australiana", "hola, soy de australia", "soy de australia, ¿y tú?", "vengo de australia"], "why": "Soy de Australia, or Soy australiano.", "show": "Soy de Australia."}, {"t": "type", "id": "1.6.where", "prompt": "Ask your mate where they're from.", "answers": ["¿de dónde eres?", "¿y tú, de dónde eres?", "¿de dónde eres tú?", "hola, ¿de dónde eres?", "¿tú de dónde eres?", "¿de dónde eres, amigo?"], "why": "¿De dónde eres? is the tú version.", "show": "¿De dónde eres?"}, {"t": "choice", "id": "1.6.chile", "prompt": "A Chilean asks ¿Cómo te llamai? They want to know…", "options": ["your name", "where you live", "how you are"], "answer": "your name", "why": "llamai is the Chilean ending on llamas.", "speak": "¿Cómo te llamai?", "optLang": "en"}, {"t": "say", "id": "1.6.say", "es": "Mucho gusto. Me llamo {name}. Soy de Australia.", "en": "Nice to meet you. My name is {name}. I'm from Australia.", "tip": "llamo sounds like YAH-moh."}]}], "check": {"title": "Level 1 check", "pass": 0.8, "steps": [{"t": "choice", "id": "1.c.h", "prompt": "How do you say the h in hotel?", "options": ["It's silent", "Like English h", "Like a j"], "answer": "It's silent", "why": "h is always silent.", "speak": "hotel", "optLang": "en"}, {"t": "choice", "id": "1.c.z", "prompt": "In Latin America, zapato (shoe) sounds like…", "options": ["sah-PAH-toh", "thah-PAH-toh", "zah-PAH-toh"], "answer": "sah-PAH-toh", "why": "z sounds like s in Latin America.", "speak": "zapato", "optLang": "en"}, {"t": "choice", "id": "1.c.tardes", "prompt": "It's 2 pm. You say…", "options": ["Buenas tardes", "Buenos días", "Buenas noches"], "answer": "Buenas tardes", "why": "Afternoon is buenas tardes.", "speak": "Buenas tardes"}, {"t": "type", "id": "1.c.gusto", "prompt": "Someone says Mucho gusto. Reply.", "answers": ["igualmente", "mucho gusto", "igualmente, mucho gusto", "encantado", "encantada", "mucho gusto, igualmente", "igualmente, encantado", "encantado, igualmente", "el gusto es mío", "encantada, igualmente"], "why": "Igualmente (likewise).", "show": "Igualmente."}, {"t": "choice", "id": "1.c.boss", "prompt": "The company owner. Which 'you'?", "options": ["usted", "tú", "ustedes"], "answer": "usted", "why": "Bosses get usted.", "speak": "¿Cómo está usted?"}, {"t": "choice", "id": "1.c.mapa", "prompt": "Pick the right word: ___ mapa", "options": ["el", "la"], "answer": "el", "why": "mapa is a rule-breaker: el mapa.", "speak": "el mapa"}, {"t": "choice", "id": "1.c.foto", "prompt": "Pick the right word: ___ foto", "options": ["la", "el"], "answer": "la", "why": "foto is a rule-breaker: la foto.", "speak": "la foto"}, {"t": "type", "id": "1.c.clavos", "prompt": "Make it more than one: el clavo (the nail)", "answers": ["los clavos"], "why": "los clavos.", "show": "Los clavos."}, {"t": "type", "id": "1.c.llave", "prompt": "Write 'a key' in Spanish.", "answers": ["una llave"], "why": "una llave.", "show": "Una llave."}, {"t": "listen", "id": "1.c.listen", "prompt": "Listen. Which number?", "es": "catorce", "options": ["14", "4", "15"], "answer": "14", "why": "catorce is 14. cuatro is 4, quince is 15.", "optLang": "en"}, {"t": "type", "id": "1.c.11", "prompt": "Write 11 as a word.", "answers": ["once"], "why": "once is 11.", "show": "Once."}, {"t": "build", "id": "1.c.build", "en": "Good afternoon, how are you? (to a customer)", "tiles": ["buenas", "tardes,", "¿cómo", "está", "usted?"], "extra": ["buenos"], "why": "buenas tardes, then the usted question."}, {"t": "choice", "id": "1.c.donde", "prompt": "What does ¿De dónde eres? mean?", "options": ["Where are you from?", "Where are you?", "Who are you?"], "answer": "Where are you from?", "why": "de dónde = from where.", "speak": "¿De dónde eres?", "optLang": "en"}, {"t": "type", "id": "1.c.name", "prompt": "Say your name (use {name}).", "answers": ["me llamo {name}", "soy {name}", "mi nombre es {name}", "yo me llamo {name}", "hola, me llamo {name}", "mucho gusto, me llamo {name}", "hola, soy {name}", "yo soy {name}", "mucho gusto, soy {name}", "hola, mi nombre es {name}", "me llamo {name}, mucho gusto", "soy {name}, mucho gusto"], "why": "Me llamo {name}.", "show": "Me llamo {name}."}, {"t": "choice", "id": "1.c.cachai", "prompt": "A Chilean says ¿Cachai? What do they mean?", "options": ["You get it?", "Are you hungry?", "See you later"], "answer": "You get it?", "why": "¿Cachai? means 'you know?' or 'get it?'.", "speak": "¿Cachai?", "optLang": "en"}]}}};
+  // "claude": the claude.ai page (account sync, Claude marking). "web": the GitHub Pages copy (this device only).
+  const EDITION = "web";
+  const DEFAULT_NAME = "Sam";
+
+  // ---------- Small helpers ----------
+  const $ = (s, r = document) => r.querySelector(s);
+  function el(tag, cls, text) { const e = document.createElement(tag); if (cls) { e.className = cls; if (/(^| )(es|big-es|ex-es|chip)( |$)/.test(cls)) e.lang = "es"; } if (text != null) e.textContent = text; return e; }
+  function add(parent, ...kids) { kids.forEach((k) => k && parent.appendChild(k)); return parent; }
+  // *word* marks Spanish inside English copy; rendered bold. Built with text nodes only.
+  function fmt(str, tag = "p", cls) {
+    const p = el(tag, cls);
+    str.split(/\*([^*]+)\*/).forEach((part, k) => p.appendChild(k % 2 ? el("strong", "es", part) : document.createTextNode(part)));
+    return p;
+  }
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+  const capFirst = (s) => s.replace(/^([¿¡]?)(\p{L})/u, (_, p, c) => p + c.toUpperCase());
+  function today(offset = 0) { const d = new Date(); d.setDate(d.getDate() + offset); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  const strict = (s) => s.toLowerCase().replace(/[¿?¡!.,;:"'“”]/g, " ").replace(/\s+/g, " ").trim();
+  const loose = (s) => strict(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const ICON_SPEAK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+
+  // Every graded exercise by id, so review can pull them back from any lesson.
+  const EXERCISES = {};
+  Object.values(LEVELS).forEach((lv) => {
+    lv.lessons.forEach((ls) => ls.steps.forEach((s) => { if (s.id) EXERCISES[s.id] = { ...s, lesson: ls.id }; }));
+    lv.check.steps.forEach((s) => { EXERCISES[s.id] = { ...s, lesson: "check-" + lv.id }; });
+  });
+
+  // ---------- Progress: saved to the account (db) with a copy on the device ----------
+  const BLANK = () => ({ v: 1, passed: {}, done: {}, review: {}, cleared: {}, streak: { last: null, days: 0 }, settings: { voice: "", rate: 0.9, name: "" }, inProgress: null, updatedAt: 0 });
+  let P = BLANK();
+  const sync = { where: "device", ref: null, writing: false, again: false, timer: null, failing: false };
+  const local = {
+    ok: (() => { try { localStorage.setItem("pap.test", "1"); localStorage.removeItem("pap.test"); return true; } catch (e) { return false; } })(),
+    get() { try { const v = localStorage.getItem("pap.progress"); return v ? JSON.parse(v) : null; } catch (e) { return null; } },
+    set(v) { try { localStorage.setItem("pap.progress", JSON.stringify(v)); } catch (e) { /* storage blocked */ } }
+  };
+  const isObj = (x) => !!x && typeof x === "object" && !Array.isArray(x);
+  // Accepts anything (a frozen db snapshot, damaged saved data) and returns a fresh, well-formed copy.
+  function normalise(raw) {
+    const b = BLANK();
+    let p; try { p = JSON.parse(JSON.stringify(raw)); } catch (e) { p = null; }
+    if (!isObj(p)) return b;
+    const out = b;
+    for (const [k, v] of Object.entries(isObj(p.done) ? p.done : {})) if (isObj(v) && typeof v.best === "number" && typeof v.total === "number") out.done[k] = v;
+    for (const [k, v] of Object.entries(isObj(p.passed) ? p.passed : {})) if (isObj(v)) out.passed[k] = v;
+    // Drop damaged entries and finished-markers older than 60 days. Unknown question ids are kept (another device may have a newer level).
+    for (const [k, v] of Object.entries(isObj(p.review) ? p.review : {})) if (isObj(v) && typeof v.due === "string" && typeof v.need === "number") out.review[k] = v;
+    const cutoff = Date.now() - 60 * 864e5;
+    for (const [k, v] of Object.entries(isObj(p.cleared) ? p.cleared : {})) if (typeof v === "number" && v > cutoff) out.cleared[k] = v;
+    if (isObj(p.streak) && typeof p.streak.days === "number") out.streak = { last: typeof p.streak.last === "string" ? p.streak.last : null, days: p.streak.days };
+    if (isObj(p.settings)) {
+      if (typeof p.settings.voice === "string") out.settings.voice = p.settings.voice;
+      if (typeof p.settings.rate === "number") out.settings.rate = p.settings.rate;
+      if (typeof p.settings.name === "string") out.settings.name = p.settings.name.slice(0, 40);
+    }
+    if (isObj(p.inProgress) && typeof p.inProgress.id === "string" && typeof p.inProgress.i === "number") {
+      const q = p.inProgress;
+      out.inProgress = { id: q.id, i: q.i, right: typeof q.right === "number" ? q.right : 0, graded: typeof q.graded === "number" ? q.graded : 0, missed: Array.isArray(q.missed) ? q.missed.filter((m) => typeof m === "string") : [] };
+    }
+    out.updatedAt = typeof p.updatedAt === "number" ? p.updatedAt : 0;
+    return out;
+  }
+  P = normalise(local.get());
+
+  const dayNum = (s) => (s ? Math.round(Date.parse(s + "T12:00:00") / 864e5) : -1e9);
+  // Combine two copies of progress (this device and the account) without losing either side's work.
+  function merge(a, b) {
+    const newer = (a.updatedAt || 0) >= (b.updatedAt || 0) ? a : b;
+    const out = BLANK();
+    const ratio = (d) => (d ? d.best / Math.max(d.total, 1) : -1);
+    for (const k of new Set([...Object.keys(a.done), ...Object.keys(b.done)])) out.done[k] = ratio(a.done[k]) >= ratio(b.done[k]) ? a.done[k] : b.done[k];
+    out.passed = { ...b.passed, ...a.passed };
+    // Per question: the most recent change wins, and a question finished on either device stays finished.
+    for (const k of new Set([...Object.keys(a.cleared), ...Object.keys(b.cleared)])) out.cleared[k] = Math.max(a.cleared[k] || 0, b.cleared[k] || 0);
+    for (const k of new Set([...Object.keys(a.review), ...Object.keys(b.review)])) {
+      const x = a.review[k], y = b.review[k];
+      const r = !x ? y : !y ? x : (x.at || 0) >= (y.at || 0) ? x : y;
+      if (!(k in out.cleared) || (r.at || 0) > out.cleared[k]) out.review[k] = r;
+    }
+    // Streak: same day keeps the longer count; studying on one device the day after the other continues the streak.
+    const [early, late] = dayNum(a.streak.last) <= dayNum(b.streak.last) ? [a.streak, b.streak] : [b.streak, a.streak];
+    const gap = dayNum(late.last) - dayNum(early.last);
+    out.streak = { last: late.last, days: gap === 0 ? Math.max(early.days, late.days) : gap === 1 ? Math.max(late.days, early.days + 1) : late.days };
+    out.settings = { ...newer.settings };
+    out.inProgress = newer.inProgress;
+    out.updatedAt = Math.max(a.updatedAt || 0, b.updatedAt || 0);
+    return out;
+  }
+  const same = (x, y) => JSON.stringify(x) === JSON.stringify(y);
+  const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej({ code: "timeout" }), ms))]);
+
+  function save() {
+    P.updatedAt = Date.now();
+    local.set(P);
+    if (!sync.ref) return;
+    clearTimeout(sync.timer);
+    sync.timer = setTimeout(flush, Math.max(800, (sync.backoffUntil || 0) - Date.now()));
+  }
+  // Read the account copy, merge it in, then write, so a device left open never overwrites newer work from another.
+  async function flush() {
+    if (!sync.ref) return;
+    if (sync.writing) { sync.again = true; return; }
+    sync.writing = true;
+    let retry = 0;
+    try {
+      const snap = await withTimeout(sync.ref.get(), 10000);
+      if (snap.exists) {
+        const before = JSON.stringify(P);
+        P = merge(P, normalise(snap.data()));
+        local.set(P);
+        if (JSON.stringify(P) !== before && route.name === "home" && !sheetOpen) rerender();
+      }
+      await withTimeout(sync.ref.set(JSON.parse(JSON.stringify(P))), 10000);
+      sync.where = "account"; sync.failing = false;
+    } catch (e) {
+      const code = e && e.code;
+      sync.failing = true;
+      if (["invalid_argument", "revoked", "not_granted", "capability_disabled", "capability_removed", "quota_exceeded", "transform_error"].includes(code)) { sync.ref = null; sync.where = "device"; }
+      else retry = code === "resource_exhausted" ? 30000 : 4000 + Math.random() * 3000; // the copy on this device is safe; try again later
+      sync.backoffUntil = Date.now() + retry;
+    } finally {
+      sync.writing = false; renderMeta();
+      if (retry) { clearTimeout(sync.timer); sync.timer = setTimeout(flush, retry); }
+      else if (sync.again) { sync.again = false; flush(); }
+    }
+  }
+  async function connectAccount() {
+    if (!window.claude || !window.claude.use) return;
+    try {
+      const [db, user] = await Promise.all([window.claude.use("db"), window.claude.use("user")]);
+      if (!db || !user) return;
+      const uid = await user.id();
+      if (!uid) return;
+      sync.ref = db.doc("data/users/" + uid + "/progress");
+      await flush();
+      // Coming back to the app (switching from the other device) picks up what was done there.
+      document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && sync.ref) flush(); });
+    } catch (e) { sync.ref = null; renderMeta(); }
+  }
+
+  function markStreak() {
+    const t = today();
+    if (P.streak.last === t) return;
+    P.streak.days = P.streak.last === today(-1) ? P.streak.days + 1 : 1;
+    P.streak.last = t;
+  }
+  function recordResult(id, right) {
+    if (!right) { P.review[id] = { due: today(), need: 2, at: Date.now() }; return; }
+    const r = P.review[id];
+    if (!r || r.due > today()) return; // only a correct answer on a due day counts
+    const need = r.need - 1;
+    if (need <= 0) { delete P.review[id]; P.cleared[id] = Date.now(); }
+    else P.review[id] = { due: today(1), need, at: Date.now() };
+  }
+  const dueIds = () => Object.keys(P.review).filter((id) => EXERCISES[id] && P.review[id].due <= today());
+
+  // ---------- Speech ----------
+  const canSpeak = "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
+  let voices = [];
+  function loadVoices() { try { voices = speechSynthesis.getVoices().filter((v) => /^es/i.test(v.lang)); } catch (e) { voices = []; } }
+  if (canSpeak) { loadVoices(); try { speechSynthesis.addEventListener("voiceschanged", () => { const had = spainVoice(); loadVoices(); if (spainVoice() !== had && route.name === "run" && !run.answered) renderRun(); }); } catch (e) { /* older browsers */ } }
+  function chooseVoice() {
+    if (P.settings.voice) { const v = voices.find((x) => x.name === P.settings.voice); if (v) return v; }
+    // Latin American first; Spain's voice says "th" for c and z, which this course teaches against.
+    const order = [/^es[-_]MX/i, /^es[-_]US/i, /^es[-_]419/i, /^es[-_](CO|CL|PE)/i, /^es[-_](?!ES|AR)/i, /^es$/i, /^es[-_]ES/i];
+    // Within a language, prefer the standard voices (Paulina, Mónica) over novelty ones named "X (Spanish (Mexico))".
+    const ranked = voices.slice().sort((a, b) => /\(/.test(a.name) - /\(/.test(b.name));
+    for (const re of order) { const v = ranked.find((x) => re.test(x.lang)); if (v) return v; }
+    return null;
+  }
+  const spainVoice = () => { if (P.settings.voice) return false; const v = chooseVoice(); return !!v && /^es[-_]ES/i.test(v.lang); };
+  function speak(text) {
+    if (!canSpeak) return;
+    const u = new SpeechSynthesisUtterance(text);
+    const v = chooseVoice();
+    if (v) { u.voice = v; u.lang = v.lang; } else u.lang = "es-MX";
+    u.rate = P.settings.rate || 0.9;
+    if (speechSynthesis.speaking || speechSynthesis.pending) speechSynthesis.cancel();
+    speechSynthesis.speak(u);   // synchronous, inside the tap: iPhone and iPad only allow speech started by a tap
+    window.__papUtterance = u;   // keep a reference so Safari doesn't drop it mid-sentence
+  }
+  function speakBtn(text, label) {
+    const b = el("button", "speak"); b.type = "button"; b.innerHTML = ICON_SPEAK;
+    b.setAttribute("aria-label", label || "Listen: " + text);
+    b.addEventListener("click", () => speak(text));
+    if (!canSpeak) b.hidden = true;
+    return b;
+  }
+
+  // ---------- Claude marking for typed answers ----------
+  let sampleP = null, claudeOff = false;
+  function getSample() {
+    if (claudeOff || !window.claude || !window.claude.use) return Promise.resolve(null);
+    if (!sampleP) sampleP = window.claude.use("sample").then((s) => { if (!s) sampleP = null; return s; }, () => { sampleP = null; return null; });
+    return sampleP;
+  }
+  async function askClaude(step, attempt) {
+    const sample = await getSample();
+    if (!sample) return "off";
+    const prompt = [
+      "You are marking one answer in a beginner Spanish course for an English speaker learning Latin American Spanish (Chilean informal forms are also fine).",
+      "Task given to the learner: " + step.prompt,
+      "Example correct answers: " + step.answers.join(" | "),
+      "The learner wrote: " + attempt,
+      "Ignore capital letters, punctuation and missing accent marks. Accept any natural, correct Spanish that does the task, even if worded differently from the examples. Reject answers that are in English, ungrammatical, or answer a different task.",
+      'Reply with only JSON: {"correct": true or false, "fixed": "the learner\'s answer corrected, or unchanged if correct", "why": "one short plain-English sentence for a beginner, at most 20 words, no dashes"}'
+    ].join("\n");
+    // Returns a verdict, "off" when Claude can't be used here at all, or "failed" when this one check didn't work.
+    try {
+      const r = await sample.json(prompt, { modelTier: "quick" });
+      if (r && typeof r.correct === "boolean") return { correct: r.correct, fixed: String(r.fixed || ""), why: String(r.why || "") };
+      return "failed";
+    } catch (e) {
+      if (e && ["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(e.code)) { claudeOff = true; return "off"; }
+      return "failed";
+    }
+  }
+
+  // ---------- Routing ----------
+  const app = $("#app");
+  let route = { name: "home" };
+  let run = null; // the session being played
+  function go(r) { sheetOpen = false; route = r; rerender(); window.scrollTo({ top: 0 }); }
+  // Leaving mid-lesson asks first (no browser dialogs inside the app); the lesson can be picked up later.
+  function leave() {
+    if (route.name === "run" && run && (run.i > 0 || run.answered || run.graded > 0)) { if (!run.confirmQuit) { run.confirmQuit = true; renderRun(); } return; }
+    go({ name: "home" });
+  }
+  function rerender() { app.textContent = ""; add(app, topBar()); if (route.name === "home") renderHome(); else if (route.name === "run") renderRun(); else if (route.name === "done") renderDone(); renderSheet(); }
+
+  function topBar() {
+    const t = el("header", "top");
+    const h = el("h1", "brand"); const b = el("button", null, "Paso a Paso"); b.addEventListener("click", leave); h.appendChild(b);
+    const m = el("div", "meta"); m.id = "meta";
+    const s = el("button", "iconbtn", "Settings"); s.id = "settings-btn"; s.setAttribute("aria-expanded", String(sheetOpen)); s.addEventListener("click", () => { sheetOpen = !sheetOpen; renderSheet(); });
+    add(t, h, add(el("div", "row"), m, s));
+    setTimeout(renderMeta, 0);
+    return t;
+  }
+  function renderMeta() {
+    const m = $("#meta"); if (!m) return;
+    m.textContent = "";
+    const alive = P.streak.last === today() || P.streak.last === today(-1);
+    const where = !local.ok && !sync.ref ? "Not saved: this browser blocks storage" : sync.ref && sync.failing ? "Saved on this device, not yet to your account" : sync.where === "account" ? "Saved to your account" : "Saved on this device";
+    add(m, el("span", null, alive && P.streak.days ? `${P.streak.days} day streak` : "No streak yet"), el("span", null, where));
+  }
+
+  // ---------- Home ----------
+  function levelUnlocked(id) { return id === 1 || !!P.passed[id - 1]; }
+  function nextLesson() {
+    for (const lv of COURSE.levels) {
+      const content = LEVELS[lv.id]; if (!content || !levelUnlocked(lv.id)) continue;
+      const ls = content.lessons.find((l) => !P.done[l.id]);
+      if (ls) return { level: lv, lesson: ls };
+      if (!P.passed[lv.id]) return { level: lv, check: true };
+    }
+    return null;
+  }
+  function renderHome() {
+    const due = dueIds();
+    const nx = nextLesson();
+    const today_ = el("section", "card today");
+    add(today_, el("p", "kicker", "Today"));
+    const ip = P.inProgress && findLesson(P.inProgress.id);
+    if (ip && P.inProgress.i > 0) {
+      add(today_, add(el("div", "next"), el("h2", null, ip.title), el("p", "muted", `You stopped at step ${P.inProgress.i + 1} of ${ip.steps.length}.`)));
+      const b = el("button", "btn primary", "Pick up where you left off"); b.id = "continue";
+      b.addEventListener("click", () => startLesson(ip.id, P.inProgress.i));
+      const row = add(el("div", "row"), b);
+      if (due.length) { const r = el("button", "btn", `Review ${due.length} due`); r.id = "review"; r.addEventListener("click", startReview); row.appendChild(r); }
+      today_.appendChild(row);
+    } else if (nx && nx.lesson) {
+      add(today_, add(el("div", "next"), el("h2", null, nx.lesson.title), el("p", "muted", `Level ${nx.level.id}, lesson ${nx.lesson.id.split(".")[1]} · about ${nx.lesson.minutes} minutes`)));
+      const b = el("button", "btn primary", Object.keys(P.done).length ? "Continue" : "Start Level 1"); b.id = "continue";
+      b.addEventListener("click", () => startLesson(nx.lesson.id));
+      const row = add(el("div", "row"), b);
+      if (due.length) { const r = el("button", "btn", `Review ${due.length} due`); r.id = "review"; r.addEventListener("click", startReview); row.appendChild(r); }
+      today_.appendChild(row);
+    } else if (nx && nx.check) {
+      add(today_, add(el("div", "next"), el("h2", null, `Level ${nx.level.id} check`), el("p", "muted", "15 questions. Score 80% to unlock the next level.")));
+      const b = el("button", "btn primary", "Take the check"); b.id = "continue"; b.addEventListener("click", () => startCheck(nx.level.id));
+      const row = add(el("div", "row"), b);
+      if (due.length) { const r = el("button", "btn", `Review ${due.length} due`); r.id = "review"; r.addEventListener("click", startReview); row.appendChild(r); }
+      today_.appendChild(row);
+    } else {
+      const passedAll = P.passed[1];
+      add(today_, add(el("div", "next"), el("h2", null, passedAll ? "Level 1 done" : "All caught up"), el("p", "muted", passedAll ? "Level 2 is next. Ask Claude to build it, then it appears here." : "Nothing new right now.")));
+      if (due.length) { const r = el("button", "btn primary", `Review ${due.length} due`); r.id = "review"; r.addEventListener("click", startReview); today_.appendChild(r); }
+    }
+    const stats = el("div", "stats");
+    add(stats, el("span", null, plural(Object.keys(P.done).length, "lesson") + " done"), el("span", null, Object.keys(P.review).filter((id) => EXERCISES[id]).length + " to review"));
+    today_.appendChild(stats);
+    app.appendChild(today_);
+
+    const path = el("section", "path");
+    path.setAttribute("aria-label", "Levels");
+    COURSE.levels.forEach((lv) => path.appendChild(levelCard(lv, nx)));
+    app.appendChild(path);
+  }
+  let openLevel = null;
+  function levelCard(lv, nx) {
+    const content = LEVELS[lv.id];
+    const unlocked = levelUnlocked(lv.id);
+    const built = !!content;
+    const isCurrent = nx && nx.level.id === lv.id;
+    const card = el("article", "level" + (unlocked && built ? "" : " locked") + (isCurrent ? " current" : ""));
+    const head = el("button", "level-head"); head.id = "level-" + lv.id;
+    const status = P.passed[lv.id] ? ["Passed", "done"] : !built ? ["Coming", ""] : unlocked ? ["Open", "open"] : ["Locked", ""];
+    add(head, el("span", "lvnum", String(lv.id)), add(el("span", "lvtext"), el("span", "lvtitle", lv.title), el("span", "lvidea", lv.idea)), el("span", "pill " + status[1], status[0]));
+    const expanded = built && unlocked && (openLevel === lv.id || (openLevel == null && isCurrent));
+    head.setAttribute("aria-expanded", String(expanded));
+    if (!(built && unlocked)) head.disabled = true;
+    else head.addEventListener("click", () => { openLevel = expanded ? -1 : lv.id; rerender(); });
+    card.appendChild(head);
+    if (expanded) {
+      const list = el("div", "lessons");
+      content.lessons.forEach((ls, k) => {
+        const d = P.done[ls.id];
+        const r = el("button", "lesson-row"); r.id = "lesson-" + ls.id.replace(".", "-");
+        add(r, el("span", "tick" + (d ? " done" : ""), d ? "✓" : String(k + 1)), add(el("span", "lvtext"), el("span", "lvtitle", ls.title), d ? el("span", "lvidea", `Best ${d.best}/${d.total}`) : null), el("span", "mins", `${ls.minutes} min`));
+        r.addEventListener("click", () => startLesson(ls.id));
+        list.appendChild(r);
+      });
+      const c = el("button", "lesson-row"); c.id = "check-" + lv.id;
+      add(c, el("span", "tick" + (P.passed[lv.id] ? " done" : ""), P.passed[lv.id] ? "✓" : "★"), add(el("span", "lvtext"), el("span", "lvtitle", content.check.title), el("span", "lvidea", P.passed[lv.id] ? `Passed with ${P.passed[lv.id].score}/${P.passed[lv.id].total}` : "Score 80% to unlock the next level")), el("span", "mins", "15 Qs"));
+      c.addEventListener("click", () => startCheck(lv.id));
+      list.appendChild(c);
+      card.appendChild(list);
+    }
+    return card;
+  }
+
+  // ---------- Sessions ----------
+  function findLesson(id) { for (const lv of Object.values(LEVELS)) { const l = lv.lessons.find((x) => x.id === id); if (l) return l; } return null; }
+  const learnerName = () => (P.settings.name || "").trim() || DEFAULT_NAME;
+  // Lessons write the learner's name as {name}; swap it in everywhere, answers included.
+  function personalise(v) {
+    if (typeof v === "string") return v.split("{name}").join(learnerName());
+    if (Array.isArray(v)) return v.map(personalise);
+    if (isObj(v)) { const o = {}; for (const k of Object.keys(v)) o[k] = personalise(v[k]); return o; }
+    return v;
+  }
+  function prepStep(s, extra) {
+    const st = personalise({ ...s, ...extra });
+    if (st.t === "choice" || st.t === "listen") st.opts = shuffle(st.options);
+    if (st.t === "build") st.bank = shuffle([...st.tiles, ...(st.extra || [])]).map((t, k) => ({ t, k }));
+    return st;
+  }
+  function startLesson(id, from = 0) {
+    const ls = findLesson(id);
+    const review = shuffle(dueIds().filter((r) => EXERCISES[r].lesson !== id)).slice(0, 3).map((r) => prepStep(EXERCISES[r], { review: true }));
+    run = { kind: "lesson", id, title: ls.title, steps: [...ls.steps.map((s) => prepStep(s)), ...review], i: 0, right: 0, graded: 0, missed: [] };
+    run.i = Math.min(Math.max(0, from), ls.steps.length - 1);
+    const saved = P.inProgress && P.inProgress.id === id && from > 0 ? P.inProgress : null;
+    if (saved) {   // carry the score and the misses from before the break
+      run.right = saved.right || 0; run.graded = saved.graded || 0;
+      run.missed = (saved.missed || []).filter((m) => EXERCISES[m]).map((m) => prepStep(EXERCISES[m]));
+    }
+    keepPlace();
+    startStep(); go({ name: "run" });
+  }
+  // Remember where a lesson is, with its score so far, so it can be picked up after a break.
+  function keepPlace() {
+    P.inProgress = { id: run.id, i: Math.min(run.i, findLesson(run.id).steps.length - 1), right: run.right, graded: run.graded, missed: run.missed.map((m) => m.id).filter(Boolean) };
+    save();
+  }
+  function startReview() {
+    const ids = shuffle(dueIds()).slice(0, 10);
+    run = { kind: "review", title: "Review", steps: ids.map((r) => prepStep(EXERCISES[r], { review: true })), i: 0, right: 0, graded: 0, missed: [] };
+    startStep(); go({ name: "run" });
+  }
+  function startCheck(levelId) {
+    const c = LEVELS[levelId].check;
+    run = { kind: "check", level: levelId, title: c.title, pass: c.pass, steps: shuffle(c.steps).map((s) => prepStep(s)), i: 0, right: 0, graded: 0, missed: [] };
+    startStep(); go({ name: "run" });
+  }
+  function startStep() { run.answered = false; run.result = null; run.placed = []; run.typed = ""; run.said = false; run.checking = false; run.checkFailed = false; run.confirmQuit = false; }
+
+  function announce(msg) { const l = $("#live"); if (l) { l.textContent = ""; setTimeout(() => { l.textContent = msg; }, 50); } }
+  function grade(right, step, opts = {}) {
+    if (run.answered || tapLocked()) return;
+    run.answered = true;
+    run.lockUntil = performance.now() + 350;
+    run.prevReview = step.id && P.review[step.id] ? { ...P.review[step.id] } : null;
+    run.result = { right, ...opts };
+    // Review questions mixed into a lesson don't change that lesson's score.
+    const scored = !(step.review && run.kind === "lesson");
+    if (scored) { run.graded += 1; if (right) run.right += 1; }
+    if (!right) run.missed.push(step);
+    if (step.id) recordResult(step.id, right);
+    save();
+    renderRun();
+    announce((right ? "Correct. " : "Not quite. ") + (step.why || ""));
+  }
+  function overrideRight(step) {
+    // The learner says their typed answer was fine: count it, and take it back out of review.
+    if (!(step.review && run.kind === "lesson")) run.right += 1;
+    run.missed = run.missed.filter((m) => m !== step);
+    if (step.id) {
+      if (run.prevReview) { P.review[step.id] = { ...run.prevReview, at: Date.now() }; recordResult(step.id, true); }
+      else { delete P.review[step.id]; P.cleared[step.id] = Date.now(); }
+    }
+    run.result = { ...run.result, right: true, overridden: true };
+    save(); renderRun();
+  }
+  // A second tap landing on the next screen's buttons is ignored for a moment.
+  const tapLocked = () => !!run && performance.now() < (run.lockUntil || 0);
+  function next() {
+    if (tapLocked()) return;
+    run.i += 1;
+    if (run.i >= run.steps.length) return finish();
+    if (run.kind === "lesson") keepPlace();
+    startStep(); renderRun(); window.scrollTo({ top: 0 });
+  }
+  function finish() {
+    markStreak();
+    if (run.kind === "lesson") P.inProgress = null;
+    const res = { kind: run.kind, title: run.title, right: run.right, graded: run.graded, missed: run.missed };
+    if (run.kind === "lesson") {
+      const prev = P.done[run.id];
+      if (!prev || run.right / Math.max(run.graded, 1) >= prev.best / Math.max(prev.total, 1)) P.done[run.id] = { best: run.right, total: run.graded, at: today() };
+    }
+    if (run.kind === "check") {
+      res.passed = run.graded > 0 && run.right / run.graded >= run.pass;
+      res.level = run.level;
+      if (res.passed && !P.passed[run.level]) P.passed[run.level] = { score: run.right, total: run.graded, at: today() };
+    }
+    save();
+    route = { name: "done", res };
+    rerender(); window.scrollTo({ top: 0 });
+  }
+
+  // ---------- Runner ----------
+  function renderRun() {
+    const old = $("#runner"); const box = el("main", "card"); box.id = "runner";
+    const step = run.steps[run.i];
+    const bar = el("div", "bar");
+    const quit = el("button", "iconbtn", "Quit"); quit.id = "quit"; quit.addEventListener("click", leave);
+    const prog = el("div", "progress"); prog.setAttribute("role", "progressbar"); prog.setAttribute("aria-label", "Progress through this lesson"); prog.setAttribute("aria-valuemin", "0"); prog.setAttribute("aria-valuemax", String(run.steps.length)); prog.setAttribute("aria-valuenow", String(run.i));
+    const fill = el("span"); fill.style.width = `${((run.i + 1) / run.steps.length) * 100}%`; prog.appendChild(fill);
+    add(bar, quit, prog, el("span", "count", `${run.i + 1}/${run.steps.length}`));
+    box.appendChild(bar);
+    if (run.confirmQuit) {
+      const q = el("div", "notice confirm");
+      const lv = el("button", "btn small", "Leave"); lv.id = "leave-yes"; lv.addEventListener("click", () => { run.confirmQuit = false; go({ name: "home" }); });
+      const st = el("button", "btn small primary", "Stay"); st.id = "leave-no"; st.addEventListener("click", () => { run.confirmQuit = false; renderRun(); });
+      add(q, el("p", null, run.kind === "lesson" ? "Leave this lesson? You can pick it up from the home screen." : "Leave now? Answers so far are kept in your review."), add(el("div", "row"), st, lv));
+      box.appendChild(q);
+    }
+    const kick = run.kind === "check" ? run.title : step.review ? "Review" : run.title;
+    box.appendChild(el("p", "kicker", kick));
+    if (canSpeak && spainVoice()) box.appendChild(el("p", "notice", "Your device only has a Spain Spanish voice. It says 'th' for c and z, where Latin Americans say s."));
+    ({ learn: stepLearn, choice: stepChoice, listen: stepChoice, build: stepBuild, type: stepType, say: stepSay })[step.t](box, step);
+    if (old) old.replaceWith(box); else app.appendChild(box);
+    if (run.focusedStep !== run.i) run.lockUntil = performance.now() + 400;
+    if (run.confirmQuit) { const f = $("#leave-no"); if (f) f.focus({ preventScroll: true }); }
+    else if (run.answered) { const f = $("#continue-step"); if (f) f.focus({ preventScroll: true }); }
+    else if (run.focusId) { const f = document.getElementById(run.focusId) || $("#check"); if (f) f.focus({ preventScroll: true }); run.focusId = null; }
+    else if (run.focusedStep !== run.i && step.t !== "type") { box.tabIndex = -1; box.focus({ preventScroll: true }); }
+    run.focusedStep = run.i;
+  }
+
+  function continueBtn(label = "Continue") {
+    const b = el("button", "btn primary", label); b.id = "continue-step"; b.addEventListener("click", next); return b;
+  }
+  function feedback(step, right, extra) {
+    const f = el("div", "feedback " + (right ? "ok" : "bad"));
+    f.appendChild(el("p", "verdict", right ? pick(["¡Muy bien!", "¡Eso!", "¡Bien hecho!", "¡Perfecto!"]) : "Not quite"));
+    if (extra) extra.forEach((x) => x && f.appendChild(x));
+    if (step.why) f.appendChild(fmt(step.why));
+    return f;
+  }
+
+  function stepLearn(box, s) {
+    box.appendChild(el("h2", null, s.title));
+    const t = el("div", "learn-text"); s.text.forEach((p) => t.appendChild(fmt(p))); box.appendChild(t);
+    if (s.examples) {
+      const ul = el("ul", "examples");
+      s.examples.forEach(([es, en]) => { const li = el("li"); add(li, speakBtn(es), add(el("div"), el("div", "ex-es", es), el("div", "ex-en", en))); ul.appendChild(li); });
+      box.appendChild(ul);
+    }
+    if (s.say) {
+      box.appendChild(el("p", "label", canSpeak ? "Tap to hear, then say it" : "Say these out loud"));
+      const c = el("div", "chips"); s.say.forEach((w) => { const b = el("button", "chip", w); b.addEventListener("click", () => speak(w)); c.appendChild(b); }); box.appendChild(c);
+    }
+    if (s.mistake) {
+      const m = el("div", "mistake");
+      add(m, el("p", "kicker", "Common mistake"), add(el("p"), el("span", "w es", s.mistake.wrong), document.createTextNode("  →  "), el("span", "r es", s.mistake.right)), fmt(s.mistake.why, "p", "muted"));
+      box.appendChild(m);
+    }
+    if (s.chile) { const c = el("div", "chile"); add(c, el("p", "kicker", "In Chile"), fmt(s.chile)); box.appendChild(c); }
+    box.appendChild(add(el("div", "row"), continueBtn("Got it")));
+  }
+
+  function stepChoice(box, s) {
+    box.appendChild(el("p", "prompt", s.prompt));
+    if (s.t === "listen") {
+      const p = el("div", "play");
+      if (canSpeak) { const b = speakBtn(s.es, "Play the word"); b.id = "play"; p.appendChild(b); p.appendChild(el("span", "muted", "Tap to play. No sound? Check your phone isn't on silent.")); }
+      else p.appendChild(add(el("div"), el("p", "muted", "Audio isn't available on this device. Read it instead:"), el("p", "big-es", s.es)));
+      box.appendChild(p);
+    } else if (s.es) {
+      box.appendChild(add(el("div", "row"), speakBtn(s.es), el("p", "big-es", s.es)));
+    }
+    const ch = el("div", "choices");
+    s.opts.forEach((o, k) => {
+      const b = el("button", "tile", o); b.id = "opt-" + k; b.lang = s.optLang || "es";
+      if (run.answered) {
+        b.disabled = true;
+        if (o === s.answer) b.classList.add("ok"); else if (o === run.result.chosen) b.classList.add("bad");
+      } else b.addEventListener("click", () => grade(o === s.answer, s, { chosen: o }));
+      ch.appendChild(b);
+    });
+    box.appendChild(ch);
+    if (run.answered) {
+      box.appendChild(feedback(s, run.result.right, run.result.right ? null : [add(el("p"), el("span", "muted", "Answer: "), el("strong", null, s.answer))]));
+      const sayText = s.t === "listen" ? s.es : s.speak;
+      box.appendChild(add(el("div", "row"), sayText ? speakBtn(sayText, "Listen: " + sayText) : null, continueBtn()));
+    }
+  }
+
+  function buildSentence(tiles) { const s = capFirst(tiles.join(" ")); return /[.?!]$/.test(s) ? s : s + "."; }
+  function stepBuild(box, s) {
+    box.appendChild(el("p", "prompt", "Build this in Spanish:"));
+    box.appendChild(el("p", "big-en", s.en));
+    box.appendChild(el("p", "muted", "Tap the blocks in order. One block doesn't belong."));
+    const trayWrap = el("div"); trayWrap.appendChild(el("p", "label", "Your sentence"));
+    const tray = el("div", "tray");
+    if (!run.placed.length) tray.appendChild(el("span", "muted", "Tap a block below."));
+    run.placed.forEach((p, k) => {
+      const b = el("button", "tile", k === 0 ? capFirst(p.t) : p.t); b.id = "placed-" + p.k; b.lang = "es";
+      if (run.answered) { b.disabled = true; b.classList.add(run.result.right ? "ok" : "bad"); }
+      else b.addEventListener("click", () => { if (tapLocked()) return; run.placed.splice(k, 1); run.focusId = run.placed.length ? "check" : "pool-" + p.k; renderRun(); });
+      tray.appendChild(b);
+    });
+    trayWrap.appendChild(tray); box.appendChild(trayWrap);
+    if (!run.answered) {
+      const used = new Set(run.placed.map((p) => p.k));
+      const poolWrap = el("div"); poolWrap.appendChild(el("p", "label", "Blocks"));
+      const pool = el("div", "pool");
+      s.bank.filter((b) => !used.has(b.k)).forEach((p) => { const b = el("button", "tile", p.t); b.id = "pool-" + p.k; b.lang = "es"; b.addEventListener("click", () => { if (tapLocked()) return; run.placed.push(p); const rest = s.bank.filter((x) => x.k !== p.k && !run.placed.some((y) => y.k === x.k)); run.focusId = rest.length ? "pool-" + rest[0].k : "check"; renderRun(); }); pool.appendChild(b); });
+      poolWrap.appendChild(pool); box.appendChild(poolWrap);
+      const chk = el("button", "btn primary", "Check"); chk.id = "check"; chk.disabled = !run.placed.length;
+      chk.addEventListener("click", () => {
+        const got = run.placed.map((p) => p.t);
+        const right = got.length === s.tiles.length && got.every((t, k) => t === s.tiles[k]);
+        grade(right, s, { got });
+      });
+      const clr = el("button", "btn", "Clear"); clr.id = "clear"; clr.disabled = !run.placed.length; clr.addEventListener("click", () => { run.placed = []; renderRun(); });
+      box.appendChild(add(el("div", "row"), clr, chk));
+    } else {
+      const sentence = buildSentence(s.tiles);
+      box.appendChild(feedback(s, run.result.right, [el("p", "big-es", sentence)]));
+      box.appendChild(add(el("div", "row"), speakBtn(sentence), continueBtn()));
+    }
+  }
+
+  function stepType(box, s) {
+    box.appendChild(fmt(s.prompt, "p", "prompt"));
+    const input = el("input", "answer"); input.id = "answer-input"; input.type = "text";
+    input.setAttribute("lang", "es"); input.setAttribute("autocomplete", "off"); input.setAttribute("autocorrect", "off"); input.setAttribute("autocapitalize", "off"); input.setAttribute("spellcheck", "false");
+    input.setAttribute("aria-label", "Your answer in Spanish"); input.setAttribute("enterkeyhint", "go");
+    input.value = run.typed;
+    input.addEventListener("input", () => { run.typed = input.value; chk.disabled = !input.value.trim(); });
+    input.addEventListener("keydown", (e) => { if (e.key === "Enter" && !run.answered && !run.checking && input.value.trim()) { e.preventDefault(); markTyped(s); } });
+    const answerRow = el("div", "answer-row"); answerRow.appendChild(input); box.appendChild(answerRow);
+    const keys = el("div", "keys");
+    ["á", "é", "í", "ó", "ú", "ñ", "¿", "¡"].forEach((c) => {
+      const k = el("button", null, c); k.type = "button"; k.setAttribute("aria-label", "Type " + c);
+      k.addEventListener("click", () => { const p = input.selectionStart ?? input.value.length; input.value = input.value.slice(0, p) + c + input.value.slice(input.selectionEnd ?? p); run.typed = input.value; chk.disabled = false; input.focus(); input.setSelectionRange(p + 1, p + 1); });
+      keys.appendChild(k);
+    });
+    const chk = el("button", "btn primary", "Check"); chk.id = "check"; chk.disabled = !run.typed.trim();
+    chk.addEventListener("click", () => markTyped(s));
+    if (!run.answered) {
+      input.disabled = run.checking;
+      if (!run.checking) answerRow.appendChild(chk);
+      box.appendChild(keys);
+      if (run.checking) {
+        const w = el("div", "feedback wait"); add(w, el("p", null, "Your answer isn't on the list, so Claude is checking it. The first time, Claude asks your permission."));
+        const stop = el("button", "linkbtn", "Stop waiting"); stop.id = "stop-wait"; stop.addEventListener("click", () => { run.checkId = (run.checkId || 0) + 1; run.checking = false; run.checkFailed = true; renderRun(); });
+        w.appendChild(stop); box.appendChild(w);
+      }
+      if (run.checkFailed) { const w = el("div", "feedback wait"); add(w, el("p", null, "Couldn't check that just now. Tap Check to try again, or count it as right if you're sure.")); const o = el("button", "linkbtn", "My answer was right, count it"); o.id = "override"; o.addEventListener("click", () => { run.checkFailed = false; grade(true, s, { note: "Counted as right." }); }); w.appendChild(o); box.appendChild(w); }
+      if (!run.checking) setTimeout(() => input.focus({ preventScroll: true }), 0);
+      return;
+    }
+    input.disabled = true;
+    const r = run.result;
+    const extra = [];
+    if (r.note) extra.push(fmt(r.note));
+    if (r.claude) extra.push(el("p", null, "Claude: " + r.claude));
+    if (!r.right || r.fixed) extra.push(add(el("p"), el("span", "muted", r.right ? "Also good: " : "Answer: "), el("strong", "es", r.fixed || s.show)));
+    if (r.overridden) extra.push(el("p", "muted", "Counted as right."));
+    box.appendChild(feedback(s, r.right, extra));
+    const row = el("div", "row");
+    add(row, speakBtn(r.fixed || s.show), continueBtn());
+    if (!r.right) { const o = el("button", "linkbtn", "My answer was right, count it"); o.id = "override"; o.addEventListener("click", () => overrideRight(s)); row.appendChild(o); }
+    box.appendChild(row);
+  }
+  async function markTyped(s) {
+    const attempt = run.typed.trim();
+    if (!attempt) return;
+    if (s.answers.some((a) => strict(a) === strict(attempt))) return grade(true, s);
+    const near = s.answers.find((a) => loose(a) === loose(attempt));
+    if (near) return grade(true, s, { note: "Right. Watch the accents: *" + capFirst(near) + "*" });
+    run.checkId = (run.checkId || 0) + 1;
+    const mine = run, at = run.i, ticket = run.checkId;
+    if (run.checking) return;
+    run.checking = true; run.checkFailed = false; renderRun();
+    const verdict = await askClaude(s, attempt);
+    if (run !== mine || run.i !== at || run.checkId !== ticket || route.name !== "run") return; // learner quit, moved on or stopped waiting
+    run.checking = false;
+    if (verdict === "failed") { run.checkFailed = true; renderRun(); return; } // a hiccup is not a wrong answer
+    if (verdict !== "off") return grade(verdict.correct, s, { claude: verdict.why, fixed: verdict.fixed && strict(verdict.fixed) !== strict(attempt) ? verdict.fixed : "" });
+    grade(false, s, { note: "That's not on my list of answers. If you're sure it's right, tap 'count it'." });
+  }
+
+  function stepSay(box, s) {
+    box.appendChild(el("p", "prompt", "Say this out loud:"));
+    box.appendChild(el("p", "big-es", s.es));
+    box.appendChild(el("p", "en", s.en));
+    if (s.tip) box.appendChild(add(el("p", "muted"), el("strong", null, "Tip: "), document.createTextNode(s.tip)));
+    if (!run.said) {
+      const b = el("button", "btn primary", canSpeak ? "I said it, now let me hear it" : "I said it"); b.id = "said";
+      b.addEventListener("click", () => { if (tapLocked()) return; run.said = true; speak(s.es); renderRun(); });
+      box.appendChild(add(el("div", "row"), b));
+      return;
+    }
+    if (!run.answered) {
+      box.appendChild(add(el("div", "row"), speakBtn(s.es, "Hear it again"), el("span", "muted", "How did you go?")));
+      const g = el("div", "selfmark");
+      [["Nailed it", true], ["Close", true], ["Missed it", false]].forEach(([label, ok], k) => {
+        const b = el("button", "btn" + (k === 0 ? " primary" : ""), label); b.id = "self-" + k;
+        b.addEventListener("click", () => grade(ok, s, { self: label })); g.appendChild(b);
+      });
+      box.appendChild(g);
+      return;
+    }
+    const msg = run.result.self === "Missed it" ? "No worries. It'll come back in your review." : run.result.self === "Close" ? "Close counts. Say it once more with the audio." : "Good. Keep saying things out loud.";
+    const f = el("div", "feedback " + (run.result.right ? "ok" : "bad")); f.setAttribute("role", "status");
+    add(f, el("p", "verdict", run.result.self), el("p", null, msg));
+    box.appendChild(f);
+    box.appendChild(add(el("div", "row"), speakBtn(s.es, "Hear it again"), continueBtn()));
+  }
+
+  // ---------- Results ----------
+  function renderDone() {
+    const r = route.res;
+    const box = el("main", "card"); box.id = "done";
+    const pct = r.graded ? Math.round((r.right / r.graded) * 100) : 100;
+    box.appendChild(el("p", "kicker", r.title));
+    if (r.kind === "check") box.appendChild(el("h2", null, r.passed ? `Level ${r.level} passed` : "Not yet"));
+    else box.appendChild(el("h2", null, pct >= 80 ? "¡Muy bien!" : pct >= 50 ? "¡Vas bien!" : "¡Sigue así!"));
+    box.appendChild(el("p", "result-score", `${r.right}/${r.graded}`));
+    if (r.kind === "check") box.appendChild(el("p", "muted", r.passed ? (LEVELS[r.level + 1] ? `Level ${r.level + 1} is open.` : `Level ${r.level + 1} is next. Ask Claude to build it, then it appears on your home screen.`) : `You need ${Math.ceil(r.graded * 0.8)} to pass. Redo the lessons you found hard, then try again.`));
+    if (r.missed.length) {
+      box.appendChild(el("p", "kicker", "These go into your review"));
+      const ul = el("ul", "plain");
+      r.missed.forEach((m) => ul.appendChild(el("li", null, m.t === "say" ? m.es : m.t === "build" ? buildSentence(m.tiles) : m.t === "type" ? m.show : m.prompt.includes("___") ? m.prompt.replace("___", m.answer) : `${m.prompt} ${m.answer}`)));
+      box.appendChild(ul);
+    }
+    const home = el("button", "btn primary", "Back to levels"); home.id = "home"; home.addEventListener("click", () => go({ name: "home" }));
+    box.appendChild(add(el("div", "row"), home));
+    app.appendChild(box);
+    home.focus({ preventScroll: true });
+  }
+
+  // ---------- Settings sheet ----------
+  let sheetOpen = false;
+  function renderSheet() {
+    const old = $("#sheet"); if (old) old.remove();
+    document.body.classList.toggle("sheet-open", sheetOpen);
+    const opener = $("#settings-btn"); if (opener) opener.setAttribute("aria-expanded", String(sheetOpen));
+    if (!sheetOpen) { if (old && opener) opener.focus({ preventScroll: true }); return; }
+    const sh = el("div", "sheet"); sh.id = "sheet"; sh.setAttribute("role", "dialog"); sh.setAttribute("aria-label", "Settings");
+    const inner = el("div", "inner");
+    add(inner, el("h3", null, "Settings"));
+    const nl = el("label", "label", "Your name (used in the lessons)"); nl.setAttribute("for", "name-input");
+    const ni = el("input"); ni.id = "name-input"; ni.type = "text"; ni.maxLength = 40; ni.value = P.settings.name || ""; ni.placeholder = DEFAULT_NAME; ni.setAttribute("autocomplete", "given-name");
+    ni.addEventListener("input", () => { P.settings.name = ni.value.trim().slice(0, 40); save(); });
+    add(inner, add(el("div", "field"), nl, ni));
+    if (canSpeak) {
+      loadVoices();
+      const lab = el("label", "label", "Spanish voice"); lab.setAttribute("for", "voice");
+      const sel = el("select"); sel.id = "voice";
+      sel.appendChild(new Option("Automatic (Latin American first)", ""));
+      voices.forEach((v) => sel.appendChild(new Option(`${v.name} (${v.lang})`, v.name)));
+      sel.value = P.settings.voice || "";
+      sel.addEventListener("change", () => { P.settings.voice = sel.value; save(); speak("Hola, ¿cómo estás?"); });
+      const rate = el("select"); rate.id = "rate";
+      [["Slow", 0.75], ["Normal", 0.9], ["Fast", 1]].forEach(([l, v]) => rate.appendChild(new Option(l, String(v))));
+      rate.value = String(P.settings.rate || 0.9);
+      rate.addEventListener("change", () => { P.settings.rate = Number(rate.value); save(); speak("Cinco, diez, quince."); });
+      const rl = el("label", "label", "Speed"); rl.setAttribute("for", "rate");
+      add(inner, add(el("div"), lab, sel), add(el("div"), rl, rate), el("p", "muted", "No sound? Check your phone isn't on silent. Voices come from your device. Mexican or US Spanish voices match this course best. Avoid Spain's voices (they say 'th' for c and z) and Argentina's (they say 'sh' for ll and y)."));
+    } else add(inner, el("p", "muted", "This device can't read Spanish aloud."));
+    add(inner, el("p", "muted", EDITION === "web" ? "This copy saves your progress on this device only, so your phone and iPad each keep their own. The Claude version syncs between them." : sync.where === "account" ? "Your progress is saved to your Claude account, so it follows you between phone and iPad." : "Your progress is saved on this device only. Open the app while signed in to Claude to save it to your account."));
+    const close = el("button", "btn", "Close"); close.id = "close-settings"; close.addEventListener("click", () => { sheetOpen = false; renderSheet(); });
+    inner.appendChild(add(el("div", "row"), close));
+    sh.appendChild(inner);
+    document.body.appendChild(sh);
+    const first = sh.querySelector("select, button"); if (first) first.focus({ preventScroll: true });
+  }
+
+  // ---------- Boot ----------
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sheetOpen) { sheetOpen = false; renderSheet(); }
+  });
+  const live = el("div", "sr-only"); live.id = "live"; live.setAttribute("aria-live", "polite"); document.body.appendChild(live);
+  const start = () => { rerender(); connectAccount(); };
+  if (window.claude && window.claude.hot && window.claude.hot.ready) window.claude.hot.ready(start); else start();
+})();
+</script>
+
+<script>if("serviceWorker" in navigator){addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));}</script>
+</body>
+</html>
