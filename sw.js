@@ -1,5 +1,5 @@
 /* Service worker for Paso a Paso (GitHub Pages edition). web/build_web.py fills in the version and asset list. */
-const VERSION = "473d80ae3e64";
+const VERSION = "99a2100b753e";
 const CACHE = "pap-" + VERSION;
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icons/apple-touch-icon.png", "./icons/icon-192.png", "./icons/icon-512-maskable.png", "./icons/icon-512.png"];
 const FONT_HOSTS = ["fonts.googleapis.com", "fonts.gstatic.com"];
